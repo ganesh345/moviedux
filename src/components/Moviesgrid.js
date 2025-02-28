@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import "../styles.css";
 import Moviecard from "./Moviecard";
 
-export default function Moviesgrid({movies}) {
-  
+export default function Moviesgrid({ movies, watchlist, toggleWatchlist }) {
   const [search, setSearch] = useState("");
 
   const [genre, setGenre] = useState("All Genres");
@@ -101,9 +100,12 @@ export default function Moviesgrid({movies}) {
         {" "}
         {/* create a div with the class name movies-grid*/}
         {filteredMovies.map((movie) => (
-          <Moviecard key={movie.id} movie={movie}>
-            {" "}
-            {/*pass the movie object to the Moviecard component*/}
+          <Moviecard
+            key={movie.id}
+            movie={movie}
+            toogleWatchlist={toggleWatchlist}
+            isWatchlisted={watchlist.includes(movie.id)}
+          >
           </Moviecard>
         ))}
       </div>
