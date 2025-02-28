@@ -4,13 +4,13 @@ import Moviecard from "./Moviecard";
 
 export default function Moviesgrid() {
   const [movies, setmovies] = useState([]);
-  const [search, setSearch] = useState([]);
+  const [search, setSearch] = useState("");
 
-  const [genre, setGenre] = useState(["All Genres"]);
-  const [rating, setRating] = useState(["All Ratings"]);
+  const [genre, setGenre] = useState("All Genres");
+  const [rating, setRating] = useState("All");
 
   useEffect(() => {
-    fetch("movies.json")
+    fetch("/movies.json")
       .then((response) => response.json())
       .then((data) => setmovies(data));
   }, []);
@@ -18,9 +18,49 @@ export default function Moviesgrid() {
   const HandleSearchChange = (e) => {
     setSearch(e.target.value);
   };
+  const HandleGenreChange = (e) => {
+    setGenre(e.target.value);
+  };
 
-  const filteredMovies = (movies || []).filter((movie) =>
-    movie.title?.toLowerCase().includes(String(search || "").toLowerCase())
+  const HandleRatingChange = (e) => {
+    setRating(e.target.value);
+  };
+
+  const matchGenre = (movie, genre) => {
+    return (
+      genre === "All Genres" ||
+      movie.genre.toLowerCase() === genre.toLowerCase()
+    );
+  };
+
+  const matchSearch = (movie, search) => {
+    return movie.title.toLowerCase().includes(search.toLowerCase());
+  };
+
+  const matchRating = (movie, rating) => {
+    switch (rating) {
+      case "All":
+        return true;
+
+      case "Good":
+        return movie.rating >= 8;
+
+      case "Ok":
+        return movie.rating >= 5 && movie.rating < 8;
+
+      case "Bad":
+        return movie.rating < 5;
+
+      default:
+        return false;
+    }
+  };
+
+  const filteredMovies = movies.filter(
+    (movie) =>
+      matchGenre(movie, genre) &&
+      matchRating(movie, rating) &&
+      matchSearch(movie, search)
   );
 
   return (
@@ -35,7 +75,11 @@ export default function Moviesgrid() {
       <div className="filter-bar">
         <div className="filter-slot">
           <label>Genre</label>
-          <select className="filter-dropdown">
+          <select
+            className="filter-dropdown"
+            value={genre}
+            onChange={HandleGenreChange}
+          >
             <option>All Genres</option>
             <option>Action</option>
             <option>Drama</option>
@@ -46,7 +90,11 @@ export default function Moviesgrid() {
 
         <div className="filter-slot">
           <label>Rating</label>
-          <select className="filter-dropdown">
+          <select
+            className="filter-dropdown"
+            value={rating}
+            onChange={HandleRatingChange}
+          >
             <option>All</option>
             <option>Good</option>
             <option>Bad</option>
