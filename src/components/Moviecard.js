@@ -3,8 +3,18 @@ import '../styles.css';
 
 export default function Moviecard({movie}) {
     const ErrorHandling = (e) => {
-        e.target.src = 'images/default.png';
-    }
+        e.target.src = "images/default.jpg";
+    };
+
+    const getRatingClass = (rating) => {
+        if (rating >= 7) {
+            return 'rating-good';
+        } else if (rating >= 4 && rating < 7) {
+            return 'rating-ok';
+        } else {
+            return 'rating-bad';
+        }
+    };
 
     return (
         <div className="movie-card" key={movie.id}>
@@ -12,7 +22,7 @@ export default function Moviecard({movie}) {
             <div className="movie-card-info">
                 <h3 className="movie-card-title">{movie.title}</h3>
                 <p className="movie-card-genre">{movie.genre}</p>
-                <p className="movie-card-rating">{movie.rating}</p>
+                <p className={`movie-card-rating ${getRatingClass(movie.rating)}`}>{movie.rating}</p>
             </div>
         </div>
     );
